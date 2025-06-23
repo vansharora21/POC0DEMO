@@ -1,14 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 import Sidebar from "./components/common/Sidebar";
 import Categories from "./pages/Categories";
-import Courses from "./pages/CoursesCategories";
-import Enrollments from "./pages/Enrollments";
-import Queries from "./pages/Queries";
 import Emails from "./pages/BorcEmail";
 import LoginPage from "./pages/Login-Page";
-import FAQPage from "./pages/FAQ";
+
 import { useLocation } from "react-router-dom";
-import CourseDetails from "./pages/CourseDetails";
+
 // import FAQPage from "./pages/FAQ";
 
 function App() {
@@ -30,12 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard" element={<Categories />} />
-        <Route path="/FAQ" element={<FAQPage />} />
-        <Route path="/Cocat" element={<Courses />} />
-        <Route path="/Enroll" element={<Enrollments />} />
-        <Route path="/Queries" element={<Queries />} />
         <Route path="/Emails" element={<Emails />} />
-        <Route path="/details" element={<CourseDetails />} />
       </Routes>
     </div>
   );
