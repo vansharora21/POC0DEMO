@@ -1,0 +1,12 @@
+export const ADMIN_GET_CATEGORY = "admin/get/category";
+export const ADMIN__CATEGORY = "admin/addCategory";
+export const ADMIN__DELETE_CATEFGORY = "admin/delete/category";
+export const USER_CONTACT_USER = "user/contact/users";
+export const ADMIN_GET_COURSES = "admin/get/courses";
+export const UPLOAD_PDF = "admin/upload/pdf";
+export const DELETE_COURSES = "admin/delete/course";
+export const ADD_COURSES = "admin/add/course";
+export const UPDATE_COURSES = "admin/update/course";
+export const ADD_CONTENT = "admin/add/content";
+export const UPDATE_CATEGORY = "admin/update/category";
+export const ADD_ACTIVITIYS = "add/activities";
