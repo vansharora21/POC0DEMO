@@ -17,10 +17,12 @@ const OverviewPage = () => {
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
+    console.log("hello", file)
     processFile(file);
   };
 
   const processFile = (file) => {
+    console.log("file is here", file)
     if (file) {
       const validTypes = [
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -32,6 +34,9 @@ const OverviewPage = () => {
       }
       setSelectedFile(file);
       readExcelFile(file);
+      console.log("Selected file name:", file.name);
+    console.log("Selected file object:", file);
+    console.log("selectedFile is here", selectedFile)
     }
   };
 
@@ -76,58 +81,50 @@ const OverviewPage = () => {
   };
 
   const handleExcelUpload = async () => {
-    if (!selectedFile) {
-      alert("Please select an Excel file first");
-      return;
-    }
-    setUploadLoading(true);
-    setUploadProgress(0);
-    
-    try {
-      const formData = new FormData();
-      formData.append("excelFile", selectedFile);
-      formData.append("parsedData", JSON.stringify(excelData));
-      
-      // Simulate progress
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 10;
-        });
-      }, 200);
+  if (!selectedFile) {
+    alert("Please select an Excel file first");
+    return;
+  }
 
-      const response = await axios.post(
-        `${API}/admin/upload-excel-categories`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      
-      setUploadProgress(100);
-      console.log("Excel upload successful:", response.data);
-      alert("Excel file uploaded successfully!");
-      
-      // Reset after success
-      setTimeout(() => {
-        setSelectedFile(null);
-        setExcelData([]);
-        setUploadProgress(0);
-      }, 1500);
-      
-    } catch (error) {
-      console.error("Error uploading Excel file:", error);
-      alert("Error uploading Excel file. Please try again.");
+  setUploadLoading(true);
+  setUploadProgress(0);
+
+  try {
+    const fileName = selectedFile.name;
+    const fileUrl = `${fileName}`;
+
+    // Create FormData
+    const formData = new FormData();
+    formData.append("file", selectedFile); // 👈 URL string in FormData
+
+    console.log("FormData payload: excelFile =", fileUrl);
+
+    const response = await axios.post(`${API}admin/upload-excel`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    setUploadProgress(100);
+    console.log("Upload successful:", response.data);
+    alert("Excel file URL sent successfully!");
+
+    // Optional reset
+    setTimeout(() => {
+      setSelectedFile(null);
+      setExcelData([]);
       setUploadProgress(0);
-    } finally {
-      setUploadLoading(false);
-    }
-  };
+    }, 1500);
+    
+  } catch (error) {
+    console.error("Error uploading form-data:", error);
+    alert("Failed to send Excel file URL.");
+    setUploadProgress(0);
+  } finally {
+    setUploadLoading(false);
+  }
+};
+
 
   const removeFile = () => {
     setSelectedFile(null);

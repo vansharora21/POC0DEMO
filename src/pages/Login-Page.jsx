@@ -62,12 +62,11 @@ export default function LoginPage() {
 
   return (
     <>
-      <div style={{ marginLeft: "14rem" }}>
+      <div style={{ marginLeft: "14rem"}}>
         <div className="min-h-screen flex items-center justify-center bg-[#0f172a] py-12">
-          <div className="w-full max-w-7xl flex flex-col md:flex-row bg-[#1e293b] rounded-3xl overflow-hidden shadow-2xl">
-
+         <div className="w-[90vw] max-w-[900px] flex flex-col md:flex-row bg-[#1e293b] rounded-3xl overflow-hidden shadow-2xl">
             {/* Left Side - Form */}
-            <div className="w-full md:w-1/2 p-12 flex flex-col justify-center">
+            <div className="w-[90vw] max-w-[800px] flex flex-col justify-center">
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -75,7 +74,7 @@ export default function LoginPage() {
                 className="w-full max-w-lg mx-auto"
               >
                 <h1 className="text-4xl font-bold text-white mb-6 text-center">
-                  Sign in to <span className="text-blue-500">Learnitfy</span>
+                  Sign in to <span className="text-blue-500">GST Portal</span>
                 </h1>
                 <form onSubmit={handleLogin} className="space-y-6">
                   <div>
@@ -121,14 +120,14 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side - Image */}
-            <div className="hidden md:flex w-1/2 bg-[#0f172a] items-center justify-center relative">
+            {/* <div className="hidden md:flex w-1/2 bg-[#0f172a] items-center justify-center relative">
               <img
                 src="https://learnitfy.com/static/media/PNG-01.8ee368613646ae2541d7.png"
                 alt="Learnitfy Preview"
                 className="rounded-lg shadow-xl w-[85%]"
               />
               <div className="absolute bg-orange-400 rounded-full w-52 h-52 top-16 left-16 opacity-20 -z-10"></div>
-            </div>
+            </div> */}
           </div>
         </div>
 

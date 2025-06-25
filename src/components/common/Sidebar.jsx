@@ -5,7 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 const SIDEBAR_ITEMS = [
 	{ name: "GST 2R ", icon: Dock , color: "#3B82F6", href: "/Emails" },
-	{ name: "Excel",icon: BookMarked ,color: "#10B981",href: "/dashboard"}
+	{ name: "Excel",icon: BookMarked ,color: "#10B981",href: "/dashboard"},
+	{ name: "Files",icon: BookMarked ,color: "#10B981",href: "/files"},
+	{ name: "Analytics",icon: Dock ,color: "#10B981",href: "/Emails"},
+
 ];
 
 const Sidebar = () => {
@@ -13,25 +16,34 @@ const Sidebar = () => {
 	const navigate = useNavigate();
 
 	// Logout functionality
-	const handleLogout = () => {
-		// Clear any stored authentication data
-		localStorage.removeItem('authToken');
-		localStorage.removeItem('userData');
-		sessionStorage.removeItem('authToken');
-		sessionStorage.removeItem('userData');
-		
-		// Clear any cookies if you're using them
-		document.cookie.split(";").forEach((c) => {
-			document.cookie = c
-				.replace(/^ +/, "")
-				.replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-		});
+	const handleLogout = async () => {
+		try {
+			// Clear any stored authentication data
+			localStorage.removeItem('authToken');
+			localStorage.removeItem('userData');
+			sessionStorage.removeItem('authToken');
+			sessionStorage.removeItem('userData');
+			
+			// Clear any cookies if you're using them
+			document.cookie.split(";").forEach((c) => {
+				document.cookie = c
+					.replace(/^ +/, "")
+					.replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+			});
 
-		// Show confirmation message
-		alert("You have been logged out successfully!");
-		
-		// Redirect to login page
-		navigate('/login');
+			// Redirect to login page first to prevent any unauthorized access
+			navigate('/');
+
+			// Show confirmation message after redirect
+			setTimeout(() => {
+				alert("You have been logged out successfully!");
+			}, 100);
+		} catch (error) {
+			console.error('Logout error:', error);
+			alert('An error occurred during logout. Please try again.');
+			// Force redirect to login page in case of error
+			navigate('/');
+		}
 	};
 
 	return (

@@ -3,6 +3,7 @@ import Sidebar from "./components/common/Sidebar";
 import Categories from "./pages/Categories";
 import Emails from "./pages/BorcEmail";
 import LoginPage from "./pages/Login-Page";
+import FileList from "./pages/FileList";
 
 import { useLocation } from "react-router-dom";
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard" element={<Categories />} />
         <Route path="/Emails" element={<Emails />} />
+        <Route path="/files" element={<FileList />} />
       </Routes>
     </div>
   );
