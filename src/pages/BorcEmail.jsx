@@ -1,10 +1,14 @@
-import { FileSpreadsheet, Download, RefreshCw, Calendar } from "lucide-react";
+import { FileSpreadsheet, Download, RefreshCw, Calendar, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import Header from "../components/common/Header";
+import { AutoSizer, Column, Table } from "react-virtualized";
+import "react-virtualized/styles.css"; // important for styling
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const ExcelDataView = () => {
+  const navigate = useNavigate();
   const [excelData, setExcelData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,12 +25,16 @@ const ExcelDataView = () => {
   const fetchExcelData = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await axios.get(`${API}/admin/get-excel-data`);
-      
+      console.log("baseURl", API)
+      // https://api.learnitfy.com/api/admin/get/gstData
+      const response = await axios.get(`${API}admin/get/gstData`);
+      console.log(response)
+
       if (response.data && response.data.data) {
         setExcelData(response.data.data);
+        console.log("excelData", excelData)
         setStats({
           totalRecords: response.data.data.length,
           lastUpdated: response.data.lastUpdated || new Date().toISOString(),
@@ -54,11 +62,11 @@ const ExcelDataView = () => {
   // Export data (optional feature)
   const handleExport = () => {
     if (excelData.length === 0) return;
-    
-    const csvContent = "data:text/csv;charset=utf-8," 
+
+    const csvContent = "data:text/csv;charset=utf-8,"
       + Object.keys(excelData[0]).join(",") + "\n"
       + excelData.map(row => Object.values(row).join(",")).join("\n");
-    
+
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -175,7 +183,7 @@ const ExcelDataView = () => {
           <h2 className='text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'>
             Excel Data Table
           </h2>
-          
+
           <div className='flex gap-3'>
             <motion.button
               onClick={handleRefresh}
@@ -187,7 +195,7 @@ const ExcelDataView = () => {
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh
             </motion.button>
-            
+
             <motion.button
               onClick={handleExport}
               disabled={excelData.length === 0}
@@ -234,39 +242,47 @@ const ExcelDataView = () => {
               </motion.button>
             </div>
           ) : excelData.length > 0 ? (
-            <div className='overflow-x-auto'>
-              <table className='min-w-full divide-y divide-gray-200'>
-                <thead className='bg-gradient-to-r from-gray-50 to-gray-100'>
-                  <tr>
-                    {Object.keys(excelData[0]).map((key) => (
-                      <th
-                        key={key}
-                        className='px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b border-gray-200'
+            <div className="w-full overflow-auto border rounded-2xl">
+              <div style={{ width: Math.max(excelData[0] ? Object.keys(excelData[0]).length * 200 : 1000, '100%'), height: 500 }}>
+                <AutoSizer disableWidth>
+                  {({ height }) => {
+                    const filteredKeys = Object.keys(excelData[0]).filter(
+                      (key) => key !== "_id" && key !== "excelFile"
+                    );
+
+                    return (
+                      <Table
+                        width={filteredKeys.length * 120}
+                        height={height}
+                        headerHeight={40}
+                        rowHeight={40}
+                        rowCount={excelData.length}
+                        rowGetter={({ index }) => excelData[index]}
+                        rowClassName="border-b border-gray-100 hover:bg-blue-50 transition"
+                        className="text-sm text-gray-800"
                       >
-                        {key}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className='bg-white divide-y divide-gray-100'>
-                  {excelData.map((row, index) => (
-                    <motion.tr
-                      key={index}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.3, delay: index * 0.02 }}
-                      className='hover:bg-blue-50/50 transition-colors duration-200'
-                    >
-                      {Object.values(row).map((value, i) => (
-                        <td key={i} className='px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium'>
-                          {String(value)}
-                        </td>
-                      ))}
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
+                        {filteredKeys.map((key) => (
+                          <Column
+                            key={key}
+                            label={key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                            dataKey={key}
+                            width={200}
+                            flexShrink={0}
+                            headerClassName="bg-gray-100 font-semibold text-gray-700 text-xs px-2 whitespace-nowrap"
+                            cellRenderer={({ cellData }) => (
+                              <div className="text-xs px-2 whitespace-pre-wrap break-words">
+                                {String(cellData)}
+                              </div>
+                            )}
+                          />
+                        ))}
+                      </Table>
+                    );
+                  }}
+                </AutoSizer>
+              </div>
             </div>
+
           ) : (
             <div className='text-center py-16'>
               <div className='w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6'>
